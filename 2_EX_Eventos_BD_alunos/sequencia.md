@@ -41,7 +41,7 @@ CREATE TABLE inscricoes (
     eventos_id INT NOT NULL,
     nome_participante VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL,
-    data_inscricao TIMESTAMP NOT NULL,
+    data_inscricao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     presente TINYINT;
 );
 
@@ -69,11 +69,11 @@ VALUES (2, 'Vale tudo Vale nada', '2007-10-15', 'Beira-mar', 700, 2);
 
 
 -- Inserir algumas inscrições
-INSERT INTO inscricoes (id, eventos_id, nome_participante, email, data_inscricao, presente)
-VALUES (1, 1, 'CalangoPVP', 'pantaloreza@gmail.com', '2012-12-09', TRUE);
+INSERT INTO inscricoes (id, eventos_id, nome_participante, email, presente)
+VALUES (1, 1, 'CalangoPVP', 'pantaloreza@gmail.com', TRUE);
 
-INSERT INTO inscricoes (id, eventos_id, nome_participante, email, data_inscricao, presente)
-VALUES (2, 2, 'ZeroBadass', 'alcinojunior420@gmail.com', '2007-09-28', TRUE);
+INSERT INTO inscricoes (id, eventos_id, nome_participante, email, presente)
+VALUES (2, 2, 'ZeroBadass', 'alcinojunior420@gmail.com', TRUE);
 
 ```
 
@@ -87,6 +87,7 @@ SELECT
     e.titulo,
     e.data_evento,
     e.local,
+    i.nome_participante,
     e.capacidade,
     e.palestrantes_id,
     p.nome AS palestrante,
@@ -100,7 +101,7 @@ LEFT JOIN
 LEFT JOIN 
     inscricoes i ON e.id = i.eventos_id
 GROUP BY 
-    e.id, e.titulo, e.data_evento, e.local, e.capacidade, p.nome, p.especialidade;
+    e.id, e.titulo, e.data_evento, e.local, e.capacidade, p.nome, p.especialidade, i.nome_participante
 
 -- Consultar a view
 SELECT * FROM vw_eventos_detalhados;
@@ -110,7 +111,7 @@ SELECT * FROM vw_eventos_detalhados;
 
 ```sql
 -- 1. Listar todos os eventos com suas respectivas informações
-SELECT id, titulo, data_evento, local, vagas_disponiveis 
+SELECT id, titulo, data_evento, local, capacidade 
 FROM vw_eventos_detalhados;
 
 
@@ -120,7 +121,7 @@ FROM vw_eventos_detalhados
 WHERE vagas_disponiveis > 0;
 
 -- 3. Listar participantes inscritos em um evento específico
-SELECT id, nome 
+SELECT id, nome_participante, titulo 
 FROM vw_eventos_detalhados
 WHERE id = 1;
 
